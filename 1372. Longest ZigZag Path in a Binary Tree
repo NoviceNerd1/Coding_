@@ -1,0 +1,68 @@
+Intuition
+A ZigZag path in a binary tree alternates between left and right turns. To solve this problem, we need to explore all possible paths starting from each node, keeping track of the direction and length of the path. The challenge is to efficiently calculate the longest ZigZag path given the potential size of the tree.
+
+Approach
+Recursive Function:
+i. Use a helper function solve that recursively traverses the tree and calculates the length of the ZigZag path.
+ii. Maintain a boolean flag to track the direction of the ZigZag path (left or right).
+iii. Use an integer count to keep track of the current length of the ZigZag path.
+Traversal:
+i. For each node, check if the direction is true (indicating that the last move was to the right). If so, continue by moving left, otherwise, move right.
+ii. At each step, update the maximum length of the ZigZag path found so far (ans).
+iii. Reset the direction and count when switching between left and right moves.
+Initialization and Execution:
+i. Start by calling the solve function for both left and right children of the root node, considering them as the start of a new ZigZag path.
+ii. Finally, return the longest ZigZag path found.
+Complexity
+Time complexity:O(n)
+Each node is visited once during the traversal, where n is the number of nodes in the tree.
+Space complexity: O(h)
+The space complexity is determined by the depth of the recursion stack, where h is the height of the tree.
+
+```
+Code
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+auto init = []() { 
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+    return 'c';
+}();
+
+class Solution {
+public:
+    int ans;
+    void solve(TreeNode* root, bool flag, int count) {
+        if (!root) return;
+        ans = max(ans, count);
+        if (flag) {
+            // If flag is true, move to left child (right move was last)
+            solve(root->left, !flag, count + 1);
+            // Reset and start a new ZigZag path by moving right
+            solve(root->right, !flag, 1);
+        } else {
+            // If flag is false, move to right child (left move was last)
+            solve(root->right, !flag, count + 1);
+            // Reset and start a new ZigZag path by moving left
+            solve(root->left, !flag, 1);
+        }
+    }
+
+    int longestZigZag(TreeNode* root) {
+        ans = 0;
+        solve(root->left, false, 1); // Start ZigZag path from left child
+        solve(root->right, true, 1); // Start ZigZag path from right child
+        return ans;        
+    }
+};
+```
